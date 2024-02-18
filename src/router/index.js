@@ -3,6 +3,7 @@ import store from "@/store";
 import LoginView from "@/views/LoginView.vue";
 import Logout from "@/components/Logout.vue";
 import AboutView from "@/views/AboutView.vue";
+import WorkshiftView from "@/views/WorkshiftView.vue";
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters.isAuthenticated) {
@@ -37,6 +38,12 @@ const routes = [
     path: '/logout',
     name: 'logout',
     component: Logout,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/work-shift',
+    name: 'work-shift',
+    component: WorkshiftView,
     beforeEnter: ifAuthenticated
   }
 ]
