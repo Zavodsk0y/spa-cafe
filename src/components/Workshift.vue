@@ -18,7 +18,7 @@ export default {
             end: this.end,
         }
         await this.$store.dispatch('createWorkshiftAsync', workshiftData);
-                this.showModal = false;
+            this.showModal = false;
     }
   },
   computed: {
@@ -36,7 +36,7 @@ export default {
 <template>
     <h2>Смены</h2>
     <button @click="showModal = true">Добавить смену</button>
-        <form class="modal-container" v-if="showModal">
+        <form @submit.prevent="createWorkshiftAsync" class="modal-container" v-if="showModal">
             <h2>Добавление смены</h2>
             <div>
                 <label for="start">Начало</label>
@@ -47,7 +47,7 @@ export default {
                 <input type="datetime-local" name="end" id="end" v-model="end">
             </div>
             <div>
-                <button class="approve_button" @click="createWorkshiftAsync" type="submit">Отправить</button>
+                <button class="approve_button" type="submit">Отправить</button>
                 <button @click="showModal = false">Закрыть</button>
             </div>
         </form>

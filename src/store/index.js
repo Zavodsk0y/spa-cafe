@@ -90,7 +90,7 @@ export default createStore({
         method: "POST",
         body: JSON.stringify(workshiftData),
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; chartset=utf8",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
