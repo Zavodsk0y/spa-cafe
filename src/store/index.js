@@ -21,6 +21,9 @@ export default createStore({
     SET_WORKSHIFTS: (state, workshifts) => {
       state.workshifts = workshifts;
     },
+    ADD_WORKSHIFT: (state, workshift) => {
+      state.workshifts.push(workshift);
+    }
   },
   actions: {
     async fetchLoginAsync({ commit }, userData) {
@@ -82,6 +85,26 @@ export default createStore({
           console.log(error);
         });
     },
+    async createWorkshiftAsync({ commit }, workshiftData) {
+      await fetch(`${API}/work-shift`, {
+        method: "POST",
+        body: JSON.stringify(workshiftData),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          console.log(result);
+          commit("ADD_WORKSHIFT", result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   },
   modules: {},
 });

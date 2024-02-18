@@ -6,11 +6,20 @@ export default {
   name: 'Workshift',
   data() {
     return {
-        showModal: false
+        showModal: false,
+        start: "",
+        end: "",
     };
   },
   methods: {
-    
+    async createWorkshiftAsync() {
+        const workshiftData = {
+            start: this.start,
+            end: this.end,
+        }
+        await this.$store.dispatch('createWorkshiftAsync', workshiftData);
+                this.showModal = false;
+    }
   },
   computed: {
     ...mapGetters(['getWorkshifts']),
@@ -27,9 +36,21 @@ export default {
 <template>
     <h2>Смены</h2>
     <button @click="showModal = true">Добавить смену</button>
-    <div class="modal-container" v-if="showModal">
-        <button @click="showModal = false">Закрыть</button>
-    </div>
+        <form class="modal-container" v-if="showModal">
+            <h2>Добавление смены</h2>
+            <div>
+                <label for="start">Начало</label>
+                <input type="datetime-local" name="start" id="start" v-model="start">
+            </div>
+            <div>
+                <label for="end">Конец</label>
+                <input type="datetime-local" name="end" id="end" v-model="end">
+            </div>
+            <div>
+                <button class="approve_button" @click="createWorkshiftAsync" type="submit">Отправить</button>
+                <button @click="showModal = false">Закрыть</button>
+            </div>
+        </form>
     <div class="workshifts">
         <div class="card" v-for="workshift in workshifts">
             <div class="workshift" v-if="workshift.active !== 0">
@@ -81,6 +102,13 @@ button  {
     align-items: center;
     justify-content: center;
     z-index: 100;
+    gap: 30px;
+    flex-direction: column;
+}
+
+.modal-container > div {
+    display: flex;
+    gap: 5px;
 }
 
 </style>
