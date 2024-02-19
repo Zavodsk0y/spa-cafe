@@ -1,5 +1,7 @@
 <script>
+import { mapGetters } from 'vuex';
 export default {
+    name: "User",
     data() {
         return {
             name: null,
@@ -9,11 +11,17 @@ export default {
             roleId: null
         }
     },
+  computed: {
+    ...mapGetters(['getUsers']),
+    users() {
+        return this.getUsers
+    }
+  },  
   methods: {
     uploadFile() {
         this.photoFile = this.$refs.file.files[0];
       },
-    signupNewEmployerAsync() {
+    async signupNewEmployerAsync() {
         let formData = new FormData();
         formData.append('name', this.name);
         formData.append('login', this.login);
@@ -21,8 +29,12 @@ export default {
         formData.append('photo_file', this.photoFile);
         formData.append('role_id', this.roleId);
 
-        this.$store.dispatch('signupNewEmployerAsync', formData);
-    }
+        await this.$store.dispatch('signupNewEmployerAsync', formData);
+        this.$store.dispatch('fetchUsersAsync');
+    },
+  },
+  mounted() {
+    this.$store.dispatch('fetchUsersAsync');
   }
 }
 </script>
@@ -56,10 +68,34 @@ export default {
             <button class="cancel_button">Отмена</button>
         </div>
     </form>
-
+    <h2>Список сотрудников</h2>
+    <div v-for="user in users" class="cards">
+        <div v-for="userData in user">
+            <div class="card">
+                <h3>{{ userData.name }}</h3>
+                <p>Логин: {{ userData.login }}</p>
+                <p>Роль: {{ userData.group }}</p>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid grey;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(6, 250px);
+    justify-content: center;
+    gap: 10px;
+}
 
 button  {
   border: none;
@@ -71,6 +107,7 @@ button  {
   font-size: 18px;
   cursor: pointer;
 }
+
 
 form {
     display: flex;
@@ -91,5 +128,7 @@ form > div {
     display: flex;
     gap: 10px;
 }
+
+
 
 </style>

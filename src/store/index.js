@@ -39,9 +39,12 @@ export default createStore({
     SET_WORKSHIFTS_ORDERS: (state, orders) => {
       state.workshiftOrders = orders;
     },
+    ADD_USER: (state, user) => {
+      state.users.push(user)
+    },
     SET_USERS: (state, users) => {
       state.users = users;
-    }
+    },
   },
   actions: {
     async fetchLoginAsync({ commit }, userData) {
@@ -213,12 +216,30 @@ export default createStore({
       })
       .then((result) => {
         console.log(result);
-        commit("SET_USERS", result);
+        commit("ADD_USER", result);
       })
       .catch((error) => {
         console.log(error);
       })
-
+    },
+    async fetchUsersAsync({ commit }) {
+      await fetch(`${API}/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+    .then((response) => {
+       return response.json();
+     })
+     .then((result) => {
+       console.log(result);
+       commit("SET_USERS", result);
+     })
+     .catch((error) => {
+        console.log(error);
+     })
     }
 
   },
