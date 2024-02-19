@@ -175,6 +175,25 @@ export default createStore({
       .catch((error) => {
           console.log(error);
         });
+    },
+    async addEmployerToWorkshiftAsync({ commit }, {workshiftId, userId}) {
+      await fetch(`${API}/work-shift/${workshiftId}/user`, {
+        method: "POST",
+        body: JSON.stringify(userId),
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
     }
   },
   modules: {},

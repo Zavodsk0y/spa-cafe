@@ -10,6 +10,7 @@ export default {
         start: "",
         end: "",
         showModalOrders: false,
+        userId: '',
     };
   },
   methods: {
@@ -31,6 +32,12 @@ export default {
     },
     async fetchWorkshiftOrdersAsync(workshiftId) {
         await this.$store.dispatch('fetchWorkshiftOrdersAsync', workshiftId);
+    },
+    async addEmployerToWorkshiftAsync(workshiftId) {
+        const userId = {
+            user_id: this.userId
+        }
+        await this.$store.dispatch('addEmployerToWorkshiftAsync', {workshiftId, userId});
     }
   },
   computed: {
@@ -87,21 +94,28 @@ export default {
                 <p>Начало смены: {{ closedWorkshift.start }}</p>        
                 <p>Окончание смены {{ closedWorkshift.end }}</p>
                 <p>Статус: Закрыта</p>
-                <button @click="showModalOrders = true" v-on:click="fetchWorkshiftOrdersAsync(closedWorkshift.id)">Заказы</button>
-                <div class="modal-container" v-if="showModalOrders">
-                    <h2>Заказы смены</h2>
-                    <div v-for="order in orders" :key="order.id">
-                        <div>{{ order.table }} - {{ order.status }}</div>
-                        <div>Работники: {{ order.shift_workers }}</div>
-                        <div>Цена: {{ order.price }}</div>
-                        <div>Итоговая сумма за смену</div>
+                <form @submit.prevent="addEmployerToWorkshiftAsync(closedWorkshift.id)">
+                    <div>
+                        <label for="amount">Идентификатор пользователя</label>
+                        <input type="number" name="userId" id="userId" v-model="userId">
                     </div>
-                    <button @click="showModalOrders = false">Закрыть</button>
-                </div>
-                
-                
+                    <div>
+                        <button class="approve_button" type="submit">Добавить сотрудника</button>
+                    </div>
+                </form>
+                <button @click="showModalOrders = true" v-on:click="fetchWorkshiftOrdersAsync(closedWorkshift.id)">Заказы</button>
             </div>
         </div>
+    </div>
+    <div class="modal-container" v-if="showModalOrders">
+        <h2>Заказы смены</h2>
+        <div v-for="order in orders" :key="order.id">
+            <div>{{ order.table }} - {{ order.status }}</div>
+            <div>Работники: {{ order.shift_workers }}</div>
+            <div>Цена: {{ order.price }}</div>
+            <div>Итоговая сумма за смену</div>
+        </div>
+        <button @click="showModalOrders = false">Закрыть</button>
     </div>
 </template>
 
