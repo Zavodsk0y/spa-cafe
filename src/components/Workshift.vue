@@ -19,6 +19,10 @@ export default {
         }
         await this.$store.dispatch('createWorkshiftAsync', workshiftData);
             this.showModal = false;
+    },
+    async closeWorkshiftAsync(workshiftId) {
+        await this.$store.dispatch('closeWorkshiftAsync', workshiftId);
+        this.$store.dispatch('fetchWorkshiftsAsync');
     }
   },
   computed: {
@@ -59,6 +63,7 @@ export default {
             <p>Начало смены: {{ workshift.start }}</p>        
             <p>Окончание смены {{ workshift.end }}</p>
             <p>Статус: Открыта</p>
+            <button @click="closeWorkshiftAsync(workshift.id)">Закрыть смену</button>
             </div>
         </div>
     </div>
@@ -70,6 +75,7 @@ export default {
             <p>Начало смены: {{ workshift.start }}</p>        
             <p>Окончание смены {{ workshift.end }}</p>
             <p>Статус: Закрыта</p>
+            <button>Открыть смену</button>
             </div>
         </div>
     </div>
@@ -88,7 +94,8 @@ export default {
     justify-content: center;
     gap: 20px;
     flex-direction: column;
-    border: 2px solid gray
+    border: 2px solid gray;
+    align-items: center;
 }
 
 button  {

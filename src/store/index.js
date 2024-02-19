@@ -23,6 +23,10 @@ export default createStore({
     },
     ADD_WORKSHIFT: (state, workshift) => {
       state.workshifts.push(workshift);
+    },
+    CLOSE_WORKSHIFT: (state, workshiftId) => {
+      const index = state.workshifts.findIndex(workshift => workshift.id === workshiftId);
+      state.workshifts[index].active = false;
     }
   },
   actions: {
@@ -102,6 +106,25 @@ export default createStore({
           commit("ADD_WORKSHIFT", result);
         })
         .catch((error) => {
+          console.log(error);
+        });
+    },
+    async closeWorkshiftAsync({ commit }, workshiftId) {
+      await fetch(`${API}/work-shift/${workshiftId}/close`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+       .then((response) => {
+          return response.json();
+        })
+       .then((result) => {
+          commit("CLOSE_WORKSHIFT", workshiftId);
+          console.log(result);
+        })
+       .catch((error) => {
           console.log(error);
         });
     }
