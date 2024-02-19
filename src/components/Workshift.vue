@@ -14,8 +14,8 @@ export default {
   methods: {
     async createWorkshiftAsync() {
         const workshiftData = {
-            start: this.start,
-            end: this.end,
+            start: this.start.replace('T', ' '),
+            end: this.end.replace('T', ' ')
         }
         await this.$store.dispatch('createWorkshiftAsync', workshiftData);
             this.showModal = false;
@@ -51,14 +51,25 @@ export default {
                 <button @click="showModal = false">Закрыть</button>
             </div>
         </form>
-    <div class="workshifts">
+        <h2>Активная смена</h2>
+    <div class="workshifts active">
         <div class="card" v-for="workshift in workshifts">
             <div class="workshift" v-if="workshift.active !== 0">
             <h3>Смена {{ workshift.id }}</h3>
             <p>Начало смены: {{ workshift.start }}</p>        
             <p>Окончание смены {{ workshift.end }}</p>
-            <p v-if="workshift.active === 0">Не активна</p>
-            <p v-else>Статус: Открыта</p>
+            <p>Статус: Открыта</p>
+            </div>
+        </div>
+    </div>
+    <h2>Закрытые смены</h2>
+    <div class="workshifts">
+        <div class="card" v-for="workshift in workshifts">
+            <div class="workshift" v-if="workshift.active === 0">
+            <h3>Смена {{ workshift.id }}</h3>
+            <p>Начало смены: {{ workshift.start }}</p>        
+            <p>Окончание смены {{ workshift.end }}</p>
+            <p>Статус: Закрыта</p>
             </div>
         </div>
     </div>
@@ -109,6 +120,11 @@ button  {
 .modal-container > div {
     display: flex;
     gap: 5px;
+}
+
+.active {
+    display: flex;
+    justify-content: center;
 }
 
 </style>
