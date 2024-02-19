@@ -37,6 +37,7 @@ export default {
         const userId = {
             user_id: this.userId
         }
+        this.userId = ''
         await this.$store.dispatch('addEmployerToWorkshiftAsync', {workshiftId, userId});
     }
   },

@@ -6,12 +6,14 @@ export default createStore({
   state: {
     token: localStorage.getItem("token") || "",
     workshifts: [],
-    workshiftOrders: []
+    workshiftOrders: [],
+    users: [],
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
     getWorkshifts: (state) => state.workshifts,
-    getWorkshiftOrders: (state) => state.workshiftOrders
+    getWorkshiftOrders: (state) => state.workshiftOrders,
+    getUsers: (state) => state.users,
   },
   mutations: {
     AUTH_SUCCESS: (state, token) => {
@@ -36,6 +38,9 @@ export default createStore({
     },
     SET_WORKSHIFTS_ORDERS: (state, orders) => {
       state.workshiftOrders = orders;
+    },
+    SET_USERS: (state, users) => {
+      state.users = users;
     }
   },
   actions: {
@@ -194,7 +199,28 @@ export default createStore({
       .catch((error) => {
         console.log(error);
       })
+    },
+    async signupNewEmployerAsync({ commit }, employerData) {
+      await fetch(`${API}/user`, {
+        method: "POST",
+        body: employerData,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+       return response.json();
+      })
+      .then((result) => {
+        console.log(result);
+        commit("SET_USERS", result);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+
     }
+
   },
   modules: {},
 });
