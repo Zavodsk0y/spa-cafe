@@ -6,10 +6,12 @@ export default createStore({
   state: {
     token: localStorage.getItem("token") || "",
     workshifts: [],
+    workshiftOrders: []
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
     getWorkshifts: (state) => state.workshifts,
+    getWorkshiftOrders: (state) => state.workshiftOrders
   },
   mutations: {
     AUTH_SUCCESS: (state, token) => {
@@ -31,6 +33,9 @@ export default createStore({
     OPEN_WORKSHIFT: (state, workshiftId) => {
       const index = state.workshifts.findIndex(workshift => workshift.id === workshiftId);
       state.workshifts[index].active = true;
+    },
+    SET_WORKSHIFTS_ORDERS: (state, orders) => {
+      state.workshiftOrders = orders;
     }
   },
   actions: {
@@ -150,7 +155,27 @@ export default createStore({
      .catch((error) => {
           console.log(error);
         });
-      }
+    },
+    async fetchWorkshiftOrdersAsync({ commit }, workshiftId) {
+      await fetch(`${API}/work-shift/${workshiftId}/order`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+          return response.json();
+        })
+      .then((result) => {
+        commit("SET_WORKSHIFTS_ORDERS", result.data.orders);
+          console.log(result.data.orders);
+          console.log(result)
+        })
+      .catch((error) => {
+          console.log(error);
+        });
+    }
   },
   modules: {},
 });

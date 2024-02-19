@@ -9,6 +9,7 @@ export default {
         showModal: false,
         start: "",
         end: "",
+        showModalOrders: false,
     };
   },
   methods: {
@@ -27,13 +28,19 @@ export default {
     async openWorkshiftAsync(workshiftId) {
         await this.$store.dispatch('openWorkshiftAsync', workshiftId);
         this.$store.dispatch('fetchWorkshiftsAsync');
+    },
+    async fetchWorkshiftOrdersAsync(workshiftId) {
+        await this.$store.dispatch('fetchWorkshiftOrdersAsync', workshiftId);
     }
   },
   computed: {
-    ...mapGetters(['getWorkshifts']),
+    ...mapGetters(['getWorkshifts', 'getWorkshiftOrders']),
     workshifts() {
       return this.getWorkshifts;
     },
+    orders() {
+        return this.getWorkshiftOrders;
+    }
   },
   mounted() {
     this.$store.dispatch('fetchWorkshiftsAsync');
@@ -43,7 +50,7 @@ export default {
 
 <template>
     <h2>Смены</h2>
-    <button @click="showModal = true">Добавить смену</button>
+    <button @click="showModal = true">Открыть смену</button>
         <form @submit.prevent="createWorkshiftAsync" class="modal-container" v-if="showModal">
             <h2>Добавление смены</h2>
             <div>
@@ -68,18 +75,31 @@ export default {
             <p>Окончание смены {{ workshift.end }}</p>
             <p>Статус: Открыта</p>
             <button @click="closeWorkshiftAsync(workshift.id)">Закрыть смену</button>
+            <button @click="showModalOrders = true" v-on:click="fetchWorkshiftOrdersAsync(workshift.id)">Заказы</button>
             </div>
         </div>
     </div>
     <h2>Закрытые смены</h2>
     <div class="workshifts">
-        <div class="card" v-for="workshift in workshifts">
-            <div class="workshift" v-if="workshift.active === 0">
-            <h3>Смена {{ workshift.id }}</h3>
-            <p>Начало смены: {{ workshift.start }}</p>        
-            <p>Окончание смены {{ workshift.end }}</p>
-            <p>Статус: Закрыта</p>
-            <button @click="openWorkshiftAsync(workshift.id)">Открыть смену</button>
+        <div class="card" v-for="closedWorkshift in workshifts">
+            <div class="workshift" v-if="closedWorkshift.active === 0">
+                <h3>Смена {{ closedWorkshift.id }}</h3>
+                <p>Начало смены: {{ closedWorkshift.start }}</p>        
+                <p>Окончание смены {{ closedWorkshift.end }}</p>
+                <p>Статус: Закрыта</p>
+                <button @click="showModalOrders = true" v-on:click="fetchWorkshiftOrdersAsync(closedWorkshift.id)">Заказы</button>
+                <div class="modal-container" v-if="showModalOrders">
+                    <h2>Заказы смены</h2>
+                    <div v-for="order in orders" :key="order.id">
+                        <div>{{ order.table }} - {{ order.status }}</div>
+                        <div>Работники: {{ order.shift_workers }}</div>
+                        <div>Цена: {{ order.price }}</div>
+                        <div>Итоговая сумма за смену</div>
+                    </div>
+                    <button @click="showModalOrders = false">Закрыть</button>
+                </div>
+                
+                
             </div>
         </div>
     </div>
@@ -126,6 +146,7 @@ button  {
     z-index: 100;
     gap: 30px;
     flex-direction: column;
+    color: aliceblue
 }
 
 .modal-container > div {
