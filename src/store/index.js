@@ -27,6 +27,10 @@ export default createStore({
     CLOSE_WORKSHIFT: (state, workshiftId) => {
       const index = state.workshifts.findIndex(workshift => workshift.id === workshiftId);
       state.workshifts[index].active = false;
+    },
+    OPEN_WORKSHIFT: (state, workshiftId) => {
+      const index = state.workshifts.findIndex(workshift => workshift.id === workshiftId);
+      state.workshifts[index].active = true;
     }
   },
   actions: {
@@ -127,7 +131,26 @@ export default createStore({
        .catch((error) => {
           console.log(error);
         });
-    }
+    },
+    async openWorkshiftAsync({ commit }, workshiftId) {
+      await fetch(`${API}/work-shift/${workshiftId}/open`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+     .then((response) => {
+          return response.json();
+        })
+     .then((result) => {
+          commit("OPEN_WORKSHIFT", workshiftId);
+          console.log(result);
+        })
+     .catch((error) => {
+          console.log(error);
+        });
+      }
   },
   modules: {},
 });
