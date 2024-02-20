@@ -11,31 +11,35 @@ export default {
             roleId: null
         }
     },
-  computed: {
-    ...mapGetters(['getUsers']),
-    users() {
-        return this.getUsers
-    }
-  },  
-  methods: {
-    uploadFile() {
-        this.photoFile = this.$refs.file.files[0];
-      },
-    async signupNewEmployerAsync() {
-        let formData = new FormData();
-        formData.append('name', this.name);
-        formData.append('login', this.login);
-        formData.append('password', this.password);
-        formData.append('photo_file', this.photoFile);
-        formData.append('role_id', this.roleId);
-
-        await this.$store.dispatch('signupNewEmployerAsync', formData);
-        this.$store.dispatch('fetchUsersAsync');
+    computed: {
+        ...mapGetters(['getUsers']),
+        users() {
+            return this.getUsers
+        }
     },
-  },
-  mounted() {
-    this.$store.dispatch('fetchUsersAsync');
-  }
+    methods: {
+        uploadFile() {
+            this.photoFile = this.$refs.file.files[0];
+        },
+        async signupNewEmployerAsync() {
+            let formData = new FormData();
+            formData.append('name', this.name);
+            formData.append('login', this.login);
+            formData.append('password', this.password);
+            formData.append('photo_file', this.photoFile);
+            formData.append('role_id', this.roleId);
+
+            await this.$store.dispatch('signupNewEmployerAsync', formData);
+            this.$store.dispatch('fetchUsersAsync');
+        },
+        async fireEmployerAsync(employerId) {
+            await this.$store.dispatch('fireEmployerAsync', employerId);
+            this.$store.dispatch('fetchUsersAsync');
+        }
+    },
+    mounted() {
+        this.$store.dispatch('fetchUsersAsync');
+    }
 }
 </script>
 
@@ -45,15 +49,15 @@ export default {
     <form @submit.prevent="signupNewEmployerAsync" id="form" enctype="multipart/form-data" method="post">
         <div>
             <label for="login_enter">Имя</label>
-            <input type="text" name="name" id="name_enter" v-model="name">
+            <input type="text" name="name" id="name_enter" v-model="name" required>
         </div>
         <div>
             <label for="login_enter">Логин</label>
-            <input type="text" name="login" id="login_enter" v-model="login">
+            <input type="text" name="login" id="login_enter" v-model="login" required>
         </div>
         <div>
             <label for="password_enter">Пароль</label>
-            <input type="password" name="password" id="password_enter" v-model="password">
+            <input type="password" name="password" id="password_enter" v-model="password" required>
         </div>
         <div>
             <label for="file_enter">Фотография</label>
@@ -61,7 +65,7 @@ export default {
         </div>
         <div>
             <label for="role_enter">Роль</label>
-            <input type="number" name="role_id" id="role_enter" v-model="roleId">
+            <input type="number" name="role_id" id="role_enter" v-model="roleId" required>
         </div>
         <div>
             <button class="approve_button" type="submit">Отправить</button>
@@ -69,43 +73,59 @@ export default {
         </div>
     </form>
     <h2>Список сотрудников</h2>
-    <div v-for="user in users" class="cards">
-        <div v-for="userData in user">
-            <div class="card">
-                <h3>{{ userData.name }}</h3>
-                <p>Логин: {{ userData.login }}</p>
-                <p>Роль: {{ userData.group }}</p>
+    <div class="cards">
+        <div v-for="user in users" class="card">
+            <h3>{{ user.name }}</h3>
+            <p>Роль: {{ user.group }}</p>
+            <div>
+                <button>Полная информация</button>
+                <button @click="fireEmployerAsync(user.id)">Уволить сотрудника</button>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-
 .card {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border: 2px solid grey;
+    gap: 2px;
+}
+
+.card > div {
+    display: flex;
+    gap: 5px;
+}
+
+.card > div > button {
+    width: 120px;
+    height: 50px;
+    font-size: 14px;
+}
+
+.card > div > button:last-child {
+    background: crimson;
 }
 
 .cards {
     display: grid;
-    grid-template-columns: repeat(6, 250px);
+    grid-template-columns: repeat(6, 300px);
     justify-content: center;
     gap: 10px;
 }
 
-button  {
-  border: none;
-  font-weight: bold;
-  width: 225px;
-  height: 80px;
-  background: dodgerblue;
-  color: aliceblue;
-  font-size: 18px;
-  cursor: pointer;
+button {
+    border: none;
+    font-weight: bold;
+    width: 225px;
+    height: 80px;
+    background: dodgerblue;
+    color: aliceblue;
+    font-size: 18px;
+    cursor: pointer;
 }
 
 
@@ -117,18 +137,8 @@ form {
     gap: 20px;
 }
 
-form:nth-child(0) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-}
-
-form > div {
+form>div {
     display: flex;
     gap: 10px;
 }
-
-
-
 </style>

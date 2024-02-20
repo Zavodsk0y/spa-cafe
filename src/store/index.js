@@ -45,6 +45,9 @@ export default createStore({
     SET_USERS: (state, users) => {
       state.users = users;
     },
+    FIRE_USER: (state, userId) => {
+      state.users = state.users.filter(user => user.id === userId)
+    }
   },
   actions: {
     async fetchLoginAsync({ commit }, userData) {
@@ -204,6 +207,7 @@ export default createStore({
       })
     },
     async signupNewEmployerAsync({ commit }, employerData) {
+      typeof employerData
       await fetch(`${API}/user`, {
         method: "POST",
         body: employerData,
@@ -216,7 +220,7 @@ export default createStore({
       })
       .then((result) => {
         console.log(result);
-        commit("ADD_USER", result);
+        commit("ADD_USER", employerData);
       })
       .catch((error) => {
         console.log(error);
@@ -235,13 +239,31 @@ export default createStore({
      })
      .then((result) => {
        console.log(result);
-       commit("SET_USERS", result);
+       commit("SET_USERS", result.data);
      })
      .catch((error) => {
         console.log(error);
      })
+    },
+    async fireEmployerAsync({commit}, employerId) {
+      await fetch(`${API}/user/${employerId}/to-dismiss`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        console.log(result);
+        commit('FIRE_USER', employerId);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
     }
-
   },
   modules: {},
 });

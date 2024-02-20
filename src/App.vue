@@ -5,7 +5,7 @@
     <router-link to="/login" v-if="!this.$store.getters.isAuthenticated">Login </router-link>
     <router-link to="/logout" v-if="this.$store.getters.isAuthenticated">Logout </router-link>
     <router-link to="/work-shift" v-if="this.$store.getters.isAuthenticated">Смены </router-link>
-    <router-link to="/user">Добавить сотрудника </router-link>
+    <router-link to="/user">Сотрудники </router-link>
   </nav>
   <router-view/>
 </template>

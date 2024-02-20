@@ -114,8 +114,8 @@ export default {
             <div>{{ order.table }} - {{ order.status }}</div>
             <div>Работники: {{ order.shift_workers }}</div>
             <div>Цена: {{ order.price }}</div>
-            <div>Итоговая сумма за смену</div>
         </div>
+        <div>Итоговая сумма за смену: {{ orders.amount_for_all }}</div>
         <button @click="showModalOrders = false">Закрыть</button>
     </div>
 </template>
