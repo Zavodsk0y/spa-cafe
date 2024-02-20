@@ -8,14 +8,16 @@ export default createStore({
     workshifts: [],
     workshiftOrders: [],
     users: [],
-    user: {}
+    user: {},
+    orders: [],
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
     getWorkshifts: (state) => state.workshifts,
     getWorkshiftOrders: (state) => state.workshiftOrders,
     getUsers: (state) => state.users,
-    getUser: (state) => state.user
+    getUser: (state) => state.user,
+    getOrders: (state) => state.orders,
   },
   mutations: {
     AUTH_SUCCESS: (state, token) => {
@@ -53,6 +55,10 @@ export default createStore({
     },
     FIRE_USER: (state, userId) => {
       state.users = state.users.filter(user => user.id === userId)
+    },
+    SET_ORDERS: (state, orders) => {
+      state.orders = orders;
+      state.orders = state.orders.filter(order => order.status !== "ready" && order.status !== "готово")
     }
   },
   actions: {
@@ -302,6 +308,45 @@ export default createStore({
         .then((result) => {
           console.log(result);
           commit('FIRE_USER', employerId);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    },
+    async fetchOrdersAsync({ commit }) {
+      await fetch(`${API}/order/taken/get`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          console.log(result);
+          commit("SET_ORDERS", result.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    },
+    async changeStatusAsync({ commit }, { id, status }) {
+      await fetch(`${API}/order/${id}/change-status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status }),
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          console.log(result);
+          commit('CHANGE_STATUS', result.data)
         })
         .catch((error) => {
           console.log(error);

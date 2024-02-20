@@ -5,6 +5,7 @@ import Logout from "@/components/Logout.vue";
 import AboutView from "@/views/AboutView.vue";
 import WorkshiftView from "@/views/WorkshiftView.vue";
 import Signup from "@/components/Signup.vue";
+import Cook from "@/components/Cook.vue";
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters.isAuthenticated) {
@@ -52,7 +53,13 @@ const routes = [
     name: 'user',
     component: Signup,
     beforeEnter: ifAuthenticated
-  }
+  },
+  {
+    path: '/orders',
+    name: 'cook',
+    component: Cook,
+    beforeEnter: ifAuthenticated
+  },
 ]
 
 const router = createRouter({
