@@ -98,6 +98,7 @@ export default {
         </div>
     </div>
     <div id="myDropdown" class="modal-container" v-if="showDropdown">
+        <p>Идентификатор: {{ user.id }}</p>
         <p>Имя: {{ user.name }}</p>
         <p>Логин {{ user.login }}</p>
         <p>Роль: {{ user.group }}</p>

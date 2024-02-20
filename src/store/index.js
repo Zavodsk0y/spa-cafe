@@ -143,14 +143,14 @@ export default createStore({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-       .then((response) => {
+        .then((response) => {
           return response.json();
         })
-       .then((result) => {
+        .then((result) => {
           commit("CLOSE_WORKSHIFT", workshiftId);
           console.log(result);
         })
-       .catch((error) => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -162,14 +162,14 @@ export default createStore({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-     .then((response) => {
+        .then((response) => {
           return response.json();
         })
-     .then((result) => {
+        .then((result) => {
           commit("OPEN_WORKSHIFT", workshiftId);
           console.log(result);
         })
-     .catch((error) => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -181,19 +181,19 @@ export default createStore({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((response) => {
+        .then((response) => {
           return response.json();
         })
-      .then((result) => {
-        commit("SET_WORKSHIFTS_ORDERS", result.data.orders);
+        .then((result) => {
+          commit("SET_WORKSHIFTS_ORDERS", result.data.orders);
           console.log(result.data.orders);
           console.log(result)
         })
-      .catch((error) => {
+        .catch((error) => {
           console.log(error);
         });
     },
-    async addEmployerToWorkshiftAsync({ commit }, {workshiftId, userId}) {
+    async addEmployerToWorkshiftAsync({ commit }, { workshiftId, userId }) {
       await fetch(`${API}/work-shift/${workshiftId}/user`, {
         method: "POST",
         body: JSON.stringify(userId),
@@ -202,15 +202,33 @@ export default createStore({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((response) => {
-        return response.json();
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    },
+    async removeEmployerFromWorkshiftAsync({ commit }, { workshiftId, userId }) {
+      await fetch(`${API}/work-shift/${workshiftId}/user/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       })
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
     async signupNewEmployerAsync({ commit }, employerData) {
       typeof employerData
@@ -221,16 +239,16 @@ export default createStore({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((response) => {
-       return response.json();
-      })
-      .then((result) => {
-        console.log(result);
-        commit("ADD_USER", employerData);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          console.log(result);
+          commit("ADD_USER", employerData);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
     },
     async fetchUsersAsync({ commit }) {
       await fetch(`${API}/user`, {
@@ -240,16 +258,16 @@ export default createStore({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-    .then((response) => {
-       return response.json();
-     })
-     .then((result) => {
-       console.log(result);
-       commit("SET_USERS", result.data);
-     })
-     .catch((error) => {
-        console.log(error);
-     })
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          console.log(result);
+          commit("SET_USERS", result.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
     },
     async fetchUserAsync({ commit }, userId) {
       await fetch(`${API}/user/${userId}`, {
@@ -259,18 +277,18 @@ export default createStore({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        console.log(result);
-        commit("SET_USER", result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          console.log(result);
+          commit("SET_USER", result.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
     },
-    async fireEmployerAsync({commit}, employerId) {
+    async fireEmployerAsync({ commit }, employerId) {
       await fetch(`${API}/user/${employerId}/to-dismiss`, {
         method: "GET",
         headers: {
@@ -278,16 +296,16 @@ export default createStore({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        console.log(result);
-        commit('FIRE_USER', employerId);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          console.log(result);
+          commit('FIRE_USER', employerId);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
     }
   },
   modules: {},
