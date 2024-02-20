@@ -8,13 +8,17 @@ export default {
             login: null,
             password: null,
             photoFile: null,
-            roleId: null
+            roleId: null,
+            showDropdown: false
         }
     },
     computed: {
-        ...mapGetters(['getUsers']),
+        ...mapGetters(['getUsers', 'getUser']),
         users() {
             return this.getUsers
+        },
+        user() {
+            return this.getUser
         }
     },
     methods: {
@@ -30,11 +34,19 @@ export default {
             formData.append('role_id', this.roleId);
 
             await this.$store.dispatch('signupNewEmployerAsync', formData);
+            this.name = null
+            this.login = null
+            this.password = null
+            this.photoFile = null
+            this.roleId = null
             this.$store.dispatch('fetchUsersAsync');
         },
         async fireEmployerAsync(employerId) {
             await this.$store.dispatch('fireEmployerAsync', employerId);
             this.$store.dispatch('fetchUsersAsync');
+        },
+        async fetchUserAsync(userId) {
+            await this.$store.dispatch('fetchUserAsync', userId);
         }
     },
     mounted() {
@@ -79,11 +91,17 @@ export default {
                 <h3>{{ user.name }}</h3>
                 <p>Роль: {{ user.group }}</p>
                 <div>
-                    <button>Полная информация</button>
+                    <button @click="showDropdown = true" v-on:click="fetchUserAsync(user.id)">Полная информация</button>
                     <button @click="fireEmployerAsync(user.id)">Уволить сотрудника</button>
                 </div>
             </div>
         </div>
+    </div>
+    <div id="myDropdown" class="modal-container" v-if="showDropdown">
+        <p>Имя: {{ user.name }}</p>
+        <p>Логин {{ user.login }}</p>
+        <p>Роль: {{ user.group }}</p>
+        <button @click="showDropdown = false">Закрыть</button>
     </div>
 </template>
 
@@ -95,6 +113,7 @@ export default {
     align-items: center;
     border: 2px solid grey;
     gap: 2px;
+    position: relative;
 }
 
 .card  > div {
@@ -110,6 +129,7 @@ export default {
 
 .card > div > button:last-child {
     background: crimson;
+
 }
 
 .cards {
@@ -143,4 +163,35 @@ form>div {
     display: flex;
     gap: 10px;
 }
+
+/* Dropdown Content (Hidden by Default) */
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    gap: 30px;
+    flex-direction: column;
+    color: aliceblue
+}
+  
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {background-color: #ddd;}
+  
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .show {display:block;}
 </style>

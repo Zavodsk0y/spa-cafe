@@ -8,12 +8,14 @@ export default createStore({
     workshifts: [],
     workshiftOrders: [],
     users: [],
+    user: {}
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
     getWorkshifts: (state) => state.workshifts,
     getWorkshiftOrders: (state) => state.workshiftOrders,
     getUsers: (state) => state.users,
+    getUser: (state) => state.user
   },
   mutations: {
     AUTH_SUCCESS: (state, token) => {
@@ -45,6 +47,9 @@ export default createStore({
     SET_USERS: (state, users) => {
       state.users = users;
       state.users = state.users.filter(user => user.status !== 'fired')
+    },
+    SET_USER: (state, user) => {
+      state.user = user
     },
     FIRE_USER: (state, userId) => {
       state.users = state.users.filter(user => user.id === userId)
@@ -245,6 +250,25 @@ export default createStore({
      .catch((error) => {
         console.log(error);
      })
+    },
+    async fetchUserAsync({ commit }, userId) {
+      await fetch(`${API}/user/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; chartset=utf8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        console.log(result);
+        commit("SET_USER", result.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
     },
     async fireEmployerAsync({commit}, employerId) {
       await fetch(`${API}/user/${employerId}/to-dismiss`, {
