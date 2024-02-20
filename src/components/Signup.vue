@@ -74,12 +74,14 @@ export default {
     </form>
     <h2>Список сотрудников</h2>
     <div class="cards">
-        <div v-for="user in users" class="card">
-            <h3>{{ user.name }}</h3>
-            <p>Роль: {{ user.group }}</p>
-            <div>
-                <button>Полная информация</button>
-                <button @click="fireEmployerAsync(user.id)">Уволить сотрудника</button>
+        <div v-for="user in users">
+            <div v-if="user.status !== 'fired'" class="card">
+                <h3>{{ user.name }}</h3>
+                <p>Роль: {{ user.group }}</p>
+                <div>
+                    <button>Полная информация</button>
+                    <button @click="fireEmployerAsync(user.id)">Уволить сотрудника</button>
+                </div>
             </div>
         </div>
     </div>
@@ -95,7 +97,7 @@ export default {
     gap: 2px;
 }
 
-.card > div {
+.card  > div {
     display: flex;
     gap: 5px;
 }
