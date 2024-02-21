@@ -59,6 +59,10 @@ export default createStore({
     SET_ORDERS: (state, orders) => {
       state.orders = orders;
       state.orders = state.orders.filter(order => order.status !== "ready" && order.status !== "готово")
+    },
+    CHANGE_STATUS: (state, { id, status }) => {
+      const index = state.orders.findIndex(order => order.id === id);
+      state.orders[index].status = status;
     }
   },
   actions: {

@@ -34,8 +34,11 @@ export default {
             await this.$store.dispatch('fetchWorkshiftOrdersAsync', workshiftId);
         },
         async addEmployerToWorkshiftAsync(workshiftId) {
-            const userId = this.userId;
+            const userId = {
+                user_id: this.userId,
+            }
             await this.$store.dispatch('addEmployerToWorkshiftAsync', { workshiftId, userId});
+            this.userId = ''
         },
         async removeEmployerFromWorkshiftAsync(workshiftId) {
             let userId = this.userId

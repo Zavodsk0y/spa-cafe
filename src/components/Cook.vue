@@ -42,11 +42,11 @@ export default {
         </header>
         <section class="employees">
             <article class="card">
-                <div v-for="cook in undoneOrders" :key="cook.id">
+                <div v-for="cook in this.orders" :key="cook.id">
                     <p>Имя: {{ cook.table }}</p>
                     <p>Статус: {{ convertStatusData[cook.status] || cook.status }}</p>
                     <p>Должность: {{ cook.shift_workers }}</p>
-                    <button @click="changeStatus(cook)">Изменить</button>
+                    <button @click="changeStatusAsync(cook)">Изменить</button>
                 </div>
             </article>
         </section>
