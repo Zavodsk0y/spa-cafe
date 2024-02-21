@@ -6,6 +6,7 @@ import AboutView from "@/views/AboutView.vue";
 import WorkshiftView from "@/views/WorkshiftView.vue";
 import Signup from "@/components/Signup.vue";
 import Cook from "@/components/Cook.vue";
+import Waiter from "@/components/Waiter.vue";
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters.isAuthenticated) {
@@ -59,6 +60,11 @@ const routes = [
     name: 'cook',
     component: Cook,
     beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/waiter',
+    name: 'waiter',
+    component: Waiter,
   },
 ]
 

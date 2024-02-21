@@ -7,6 +7,7 @@
     <router-link to="/work-shift" v-if="this.$store.getters.isAuthenticated">Смены </router-link>
     <router-link to="/user">Сотрудники </router-link>
     <router-link to="/orders">Заказы смены </router-link>
+    <router-link to="/waiter">Официант</router-link>
   </nav>
   <router-view/>
 </template>
@@ -30,6 +31,11 @@ nav {
 nav a {
   font-weight: bold;
   color: #2c3e50;
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: #2e7a58;
 }
 
 nav a.router-link-exact-active {
